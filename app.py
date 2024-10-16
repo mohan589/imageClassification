@@ -5,7 +5,7 @@ from PIL import Image
 from transformers import pipeline
 
 checkpoint = "openai/clip-vit-large-patch14"
-detector = pipeline(model=checkpoint, task="zero-shot-image-classification", device="mps")
+detector = pipeline(model=checkpoint, task="zero-shot-image-classification")
 
 # Load your model here
 # model = torch.load('your_model.pth')

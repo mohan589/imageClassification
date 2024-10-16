@@ -8,7 +8,7 @@ ssl._create_default_https_context = ssl._create_stdlib_context
 classifier = pipeline("image-classification", model="google/vit-base-patch16-224")
 
 st.title("Image Classification App")
-uploaded_file = st.file_uploader("Choose an image...", type="jpg")
+uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
@@ -16,5 +16,4 @@ if uploaded_file is not None:
     results = classifier(image)
     for result in results:
       print(f"Label: {result['label']}, Confidence: {result['score']:.2f}")
-      if result['score'] > 0.1:
-        st.write(f"Prediction: {result['label']}")
+      st.write(f"Prediction: {result['label']}")

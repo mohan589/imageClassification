@@ -1,20 +1,11 @@
 import streamlit as st
-import torch
+import ssl
+from transformers import pipeline
 from PIL import Image
 
-from transformers import pipeline
+ssl._create_default_https_context = ssl._create_stdlib_context
 
-checkpoint = "openai/clip-vit-large-patch14"
-detector = pipeline(model=checkpoint, task="zero-shot-image-classification")
-
-# Load your model here
-# model = torch.load('your_model.pth')
-# model.eval()
-
-def classify_image(image):
-    # Preprocess and classify the image
-    # return the predicted class
-    pass
+classifier = pipeline("image-classification", model="google/vit-base-patch16-224")
 
 st.title("Image Classification App")
 uploaded_file = st.file_uploader("Choose an image...", type="jpg")
@@ -22,9 +13,8 @@ uploaded_file = st.file_uploader("Choose an image...", type="jpg")
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
     st.image(image, caption='Uploaded Image.', use_column_width=True)
-    predictions = detector(image, candidate_labels=["fox", "bear", "seagull", "owl", "jewel"])
-    # prediction = classify_image(image)
-    
-    #only give results with score > 0.3, and it's label
-    predictions = [p for p in predictions if p['score'] > 0.3]
-    st.write(f"Prediction: {predictions}")
+    results = classifier(image)
+    for result in results:
+      print(f"Label: {result['label']}, Confidence: {result['score']:.2f}")
+      if result['score'] > 0.1:
+        st.write(f"Prediction: {result['label']}")
